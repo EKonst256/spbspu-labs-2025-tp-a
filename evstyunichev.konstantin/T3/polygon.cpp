@@ -9,17 +9,9 @@
 
 namespace
 {
-  struct CalcAreaTerm
+  int GaussTermSumm(const evstyunichev::Point &first, const evstyunichev::Point &second)
   {
-    double operator()(const evstyunichev::Point &p1, const evstyunichev::Point &p2)
-    {
-      return p1.x * p2.y - p2.x * p1.y;
-    }
-  };
-
-  double dist(const evstyunichev::Point &p1, const evstyunichev::Point &p2)
-  {
-    return std::sqrt(std::pow((p1.x - p2.x), 2) + std::pow((p1.y - p2.y), 2));
+    return (first.x * second.y - first.y * second.x);
   }
 }
 
@@ -60,10 +52,14 @@ std::istream & evstyunichev::operator>>(std::istream &in, Polygon &polygon)
 
 double evstyunichev::getArea(const Polygon &polygon)
 {
-  const auto points = polygon.points;
-  const Point first = points.front();
-  const Point last = points.back();
-  double area = std::inner_product(
-    points.begin(), points.end() - 1, points.begin() + 1, CalcAreaTerm()(last, first), std::plus< double >(), CalcAreaTerm());
-  return std::abs(area) / 2.0;
+  std::vector< int > sub{ GaussTermSumm(polygon.points.front(), polygon.points.back()) };
+  std::transform
+  (
+    polygon.points.cbegin() + 1,
+    polygon.points.end(),
+    polygon.points.cbegin(),
+    std::back_inserter(sub),
+    GaussTermSumm
+  );
+  return (abs(std::accumulate(sub.cbegin(), sub.cend(), 0.0)) / 2.0);
 }
