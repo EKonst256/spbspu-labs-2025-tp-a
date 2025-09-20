@@ -103,14 +103,14 @@ namespace
     out << std::fixed << std::setprecision(1) << evstyunichev::getArea(mx) << '\n';
   }
 
-  void minArea(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out)
+  void minArea(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out)
   {
     auto mn = (*std::min_element(polygons.cbegin(), polygons.cend(), areaComp));
     evstyunichev::StreamGuard guard(out);
     out << std::fixed << std::setprecision(1) << evstyunichev::getArea(mn) << '\n';
   }
 
-  void minVertex(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out)
+  void minVertex(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out)
   {
     auto min = (*std::min_element(polygons.begin(), polygons.end(), vertexComp));
     out << min.points.size() << '\n';
@@ -124,27 +124,27 @@ namespace
     return needed.size();
   }
 
-  void countEven(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out)
+  void countEven(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out)
   {
-    out << countIf(polygons, isEven) << "\n";
+    out << countIf(polygons, isEven) << '\n';
   }
 
-  void countOdd(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out)
+  void countOdd(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out)
   {
-    out << countIf(polygons, isOdd) << "\n";
+    out << countIf(polygons, isOdd) << '\n';
   }
 
-  void countNum(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out, size_t n)
+  void countNum(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out, size_t n)
   {
-    out << countIf(polygons, numOfVertexPred{ n }) << "\n";
+    out << countIf(polygons, numOfVertexPred{ n }) << '\n';
   }
 
-  size_t countPerms(const std::vector< evstyunichev::Polygon > &polygons, const evstyunichev::Polygon &p)
+  void countPerms(const std::vector< evstyunichev::Polygon > &polygons, const evstyunichev::Polygon &p, std::ostream &out)
   {
     evstyunichev::Polygon cur;
     std::copy(p.points.begin(), p.points.end(), cur.points.begin());
     std::sort(cur.points.begin(), cur.points.end());
-    return countPermsSub(polygons, cur);
+    out << countPermsSub(polygons, cur) << '\n';
   }
 
   size_t countPermsSub(const std::vector< evstyunichev::Polygon > &polygons, evstyunichev::Polygon &p, size_t ans = 0)
@@ -182,7 +182,7 @@ void evstyunichev::areaCommand(std::istream &in, std::ostream &out, const std::v
     ans = areaNum(polygons, n);
   }
   evstyunichev::StreamGuard guard(out);
-  out << std::fixed << std::setprecision(1) << ans << "\n";
+  out << std::fixed << std::setprecision(1) << ans << '\n';
 }
 
 void evstyunichev::maxCommand(std::istream &in, std::ostream &out, const std::vector< Polygon > &polygons)
