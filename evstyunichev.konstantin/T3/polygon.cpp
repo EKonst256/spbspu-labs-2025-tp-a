@@ -4,8 +4,8 @@
 #include <iterator>
 #include <numeric>
 #include <vector>
-#include "../common/data_input.hpp"
-#include "../common/stream_guard.hpp"
+#include "data_input.hpp"
+#include "stream_guard.hpp"
 
 namespace
 {

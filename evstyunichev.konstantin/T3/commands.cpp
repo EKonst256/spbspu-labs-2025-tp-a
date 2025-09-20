@@ -9,7 +9,7 @@
 #include <numeric>
 #include <limits>
 #include "polygon.hpp"
-#include "../common/stream_guard.hpp"
+#include "stream_guard.hpp"
 
 namespace
 {
