@@ -90,14 +90,14 @@ namespace
   void maxArea(const std::vector< evstyunichev::Polygon > &polygons, std::ostream &out)
   {
     auto mx = (*std::max_element(polygons.begin(), polygons.end(), areaComp));
-    evstyunichev::StreamGuard ostr(out);
+    evstyunichev::StreamGuard guard(out);
     out << std::fixed << std::setprecision(1) << evstyunichev::getArea(mx) << '\n';
   }
 
   void minArea(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out)
   {
     auto mn = (*std::min_element(polygons.begin(), polygons.end(), areaComp));
-    evstyunichev::StreamGuard ostr(out);
+    evstyunichev::StreamGuard guard(out);
     out << std::fixed << std::setprecision(1) << evstyunichev::getArea(mn) << '\n';
   }
 
@@ -128,5 +128,87 @@ namespace
   void countNum(const std::vector< evstyunichev::Polygon >& polygons, std::ostream& out, size_t n)
   {
     out << countIf(polygons, numOfVertexPred{ n }) << "\n";
+  }
+}
+
+void evstyunichev::areaCommand(std::istream &in, std::ostream &out, const std::vector< Polygon > &polygons)
+{
+  std::string subcommand;
+  in >> subcommand;
+  double ans = 0.0;
+  std::map< std::string, std::function< double() > > subcommands;
+  subcommands["EVEN"] = std::bind(areaEven, polygons);
+  subcommands["ODD"] = std::bind(areaOdd, polygons);
+  subcommands["MEAN"] = std::bind(areaMean, polygons);
+  try
+  {
+    ans = subcommands.at(subcommand)();
+  }
+  catch (...)
+  {
+    size_t n = std::stoull(subcommand);
+    if (n < 3)
+    {
+      throw std::logic_error("Few vertices");
+    }
+    ans = areaNum(polygons, n);
+  }
+  evstyunichev::StreamGuard guard(out);
+  out << std::fixed << std::setprecision(1) << ans << "\n";
+}
+
+void evstyunichev::maxCommand(std::istream &in, std::ostream &out, const std::vector< Polygon > &polygons)
+{
+  std::string subcommand;
+  in >> subcommand;
+  if (polygons.empty())
+  {
+    throw std::logic_error("No polygons");
+  }
+  std::map< std::string, std::function< void() > > subcommands;
+  subcommands["AREA"] = std::bind(maxArea, polygons, out);
+  subcommands["VERTEXES"] = std::bind(maxVertex, polygons, out);
+  try
+  {
+    subcommands.at(subcommand)();
+  }
+  catch (...)
+  {
+    throw std::logic_error("Unknown command");
+  }
+}
+
+void evstyunichev::minCommand(std::istream &in, std::ostream &out, const std::vector< Polygon > &polygons)
+{
+  std::string subcommand;
+  in >> subcommand;
+  if (polygons.empty())
+  {
+    throw std::logic_error("No polygons");
+  }
+  std::map< std::string, std::function< void() > > subcommands;
+  subcommands["AREA"] = std::bind(minArea, polygons, out);
+  subcommands["VERTEXES"] = std::bind(minVertex, polygons, out);
+}
+
+void evstyunichev::countCommand(std::istream &in, std::ostream &out, const std::vector< Polygon > &polygons)
+{
+  std::string subcommand;
+  in >> subcommand;
+  std::map< std::string, std::function< void() > > subcommands;
+  subcommands["EVEN"] = std::bind(countEven, polygons, out);
+  subcommands["ODD"] = std::bind(countOdd, polygons, out);
+  try
+  {
+    subcommands.at(subcommand)();
+  }
+  catch (...)
+  {
+    size_t n = std::stoull(subcommand);
+    if (n < 3)
+    {
+      throw std::logic_error("Not enough vertices");
+    }
+    countNum(polygons, out, n);
   }
 }
